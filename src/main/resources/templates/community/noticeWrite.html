@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+    <div th:include="/fragment/head"></div>
+    <div th:include="/fragment/header"></div>
+    <div th:include="/fragment/nav"></div>
+
+    <div class="content">
+        <div class="inner">
+            <h2>공지사항 쓰기 테스트</h2>
+            <hr>
+            <table>
+                <tr>
+                    <th>카테고리</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="inputCategory"></td>
+                    <td><input type="text" id="inputWriter"></td>
+                    <td><input type="text" id="inputTitle"></td>
+                    <td><input type="text" id="inputContent"></td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><input type="button" value="작성" onclick="noticeWriteComplete()"></span>
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><input type="button" value="취소" onclick="noticeWriteCancel()"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div th:include="/fragment/footer"></div>
+
+
+
+    <!--  script  -->
+    <script>
+        function noticeWriteComplete(){
+            fetch('http://localhost:9000/community/noticeWrite', {
+                method: 'post',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nCategory: document.getElementById("inputCategory").value,
+                    nWriter: document.getElementById("inputWriter").value,
+                    nTitle: document.getElementById("inputTitle").value,
+                    nContent: document.getElementById("inputContent").value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        console.log(data);
+                        alert("공지사항 작성이 완료되었습니다.");
+                        location.href="http://localhost:9000/community/notice";
+                    }else{
+                        alert("공지사항 작성에 실패하였습니다. 다시 시도해주세요.");
+                    }
+                })
+                .catch((error) => console.log(error));
+        }
+    </script>
+
+    <script>
+        function noticeWriteCancel(){
+            alert("공지사항 작성을 취소하였습니다.");
+            history.back();
+        }
+    </script>
+</body>
+</html>

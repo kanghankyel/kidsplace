@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+    <div th:include="/fragment/head"></div>
+    <div th:include="/fragment/header"></div>
+    <div th:include="/fragment/nav"></div>
+
+    <div class="content">
+        <div class="inner">
+            <h2>공지사항 상세보기 테스트</h2>
+            <hr>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>카테고리</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>작성일</th>
+                </tr>
+                <tr th:each="noticeDetail : ${noticeDetail}">
+                    <td th:text="${noticeDetail.nNum}"></td>
+                    <td th:text="${noticeDetail.nCategory}"></td>
+                    <td th:text="${noticeDetail.nWriter}"></td>
+                    <td th:text="${noticeDetail.nTitle}"></td>
+                    <td th:text="${noticeDetail.nContent}"></td>
+                    <td th:text="${noticeDetail.nDate}"></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/community/noticeEdit(nNum = ${noticeDetail.nNum})}">수정하기</a></span>
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/community/noticeDelete}">삭제하기</a></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div th:include="/fragment/footer"></div>
+</body>
+</html>

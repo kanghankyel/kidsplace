@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+    <div th:include="/fragment/head"></div>
+    <div th:include="/fragment/header"></div>
+    <div th:include="/fragment/nav"></div>
+
+    <div class="content">
+        <div class="inner">
+            <h2>공지사항 수정 테스트</h2>
+            <hr>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>카테고리</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                </tr>
+                <tr th:each="noticeDetail : ${noticeDetail}">
+                    <td th:text="${noticeDetail.nNum}"></td>
+                    <td><input type="text" id="inputCategory" th:value="${noticeDetail.nCategory}"></td>
+                    <td><input type="text" id="inputWriter" th:value="${noticeDetail.nWriter}"></td>
+                    <td><input type="text" id="inputTitle" th:value="${noticeDetail.nTitle}"></td>
+                    <td><input type="text" id="inputContent" th:value="${noticeDetail.nContent}"></td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><input type="button" value="수정완료" onclick="noticeEditComplete()"></span>
+                        <span sec:authorize="hasRole('ROLE_ADMIN')"><input type="button" value="수정취소" onclick="noticeEditCancel()"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div th:include="/fragment/footer"></div>
+
+
+
+    <!--  script  -->
+    <script>
+        function noticeEditComplete(){
+            fetch('http://localhost:9000/community/noticeEdit', {
+                method: 'post',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nCategory: document.getElementById("inputCategory").value,
+                    nWriter: document.getElementById("inputWriter").value,
+                    nTitle: document.getElementById("inputTitle").value,
+                    nContent: document.getElementById("inputContent").value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        console.log(data);
+                        alert("공지사항 수정이 완료되었습니다.");
+                        location.href="http://localhost:9000/community/notice";
+                    }else{
+                        alert("공지사항 수정에 실패하였습니다. 다시 시도해주세요.");
+                    }
+                })
+                .catch((error) => console.log(error));
+        }
+    </script>
+
+    <script>
+        function noticeEditCancel(){
+            alert("공지사항 수정을 취소하였습니다.");
+            history.back();
+        }
+    </script>
+</body>
+</html>

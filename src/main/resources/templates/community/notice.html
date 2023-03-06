@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+    <div th:include="/fragment/head"></div>
+    <div th:include="/fragment/header"></div>
+    <div th:include="/fragment/nav"></div>
+
+    <div class="content">
+        <div class="inner">
+            <h2>공지사항 테스트</h2>
+            <hr>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>카테고리</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>작성일</th>
+                </tr>
+                <tr th:if="${not #strings.isEmpty(notice)}" th:each="notice : ${notice}">
+                    <td th:text="${notice.nNum}"></td>
+                    <td th:text="${notice.nCategory}"></td>
+                    <td th:text="${notice.nWriter}"></td>
+                    <td th:text="${notice.nTitle}"></td>
+                    <td><a th:href="@{/community/noticeDetail(nNum = ${notice.nNum})}"><div th:text="${notice.nContent}"></div></a></td>
+                    <td th:text="${notice.nDate}"></td>
+                </tr>
+                <tr th:if="${#strings.isEmpty(notice)}">
+                    <td colspan="6">게시된 공지사항이 없습니다.</td>
+                </tr>
+            </table>
+            <div sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/community/noticeWrite}">작성하기</a></div>
+        </div>
+    </div>
+
+    <div th:include="/fragment/footer"></div>
+</body>
+</html>
